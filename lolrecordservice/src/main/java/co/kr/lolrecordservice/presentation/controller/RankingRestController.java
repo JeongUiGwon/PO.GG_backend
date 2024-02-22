@@ -3,6 +3,7 @@ package co.kr.lolrecordservice.presentation.controller;
 import co.kr.lolrecordservice.application.SimpleRankingService;
 import co.kr.lolrecordservice.presentation.dto.LeagueItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,8 @@ public class RankingRestController {
         this.simpleRankingService = simpleRankingService;
     }
 
-    @RequestMapping(value = "/ranking/challenger", method = RequestMethod.GET)
-    public List<LeagueItemDTO> getRankingChallenger() {
-        return simpleRankingService.findAll();
+    @RequestMapping(value = "/ranking/{tier}", method = RequestMethod.GET)
+    public List<LeagueItemDTO> getRankingChallenger(@PathVariable String tier) {
+        return simpleRankingService.findByTier(tier);
     }
 }

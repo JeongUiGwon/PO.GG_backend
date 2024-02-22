@@ -10,12 +10,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Repository
 public class ListLeagueItemRepository implements LeagueItemRepository {
     private List<LeagueItem> leagueItems = new CopyOnWriteArrayList<>();
+
+    private List<LeagueItem> leagueItemsOfChallenger = new CopyOnWriteArrayList<>();
 
     @Value("${riot.api.key}")
     private String riotApiKey;
@@ -44,11 +49,23 @@ public class ListLeagueItemRepository implements LeagueItemRepository {
 
         LeagueList leagueList = response.getBody();
 
-        leagueItems.addAll(leagueList.getEntries());
+        List<LeagueItem> sortedLeagueItems = leagueList.getEntries();
+        sortedLeagueItems.sort(Comparator.comparingInt(LeagueItem::getLeaguePoints).reversed());
+
+        leagueItemsOfChallenger.addAll(sortedLeagueItems);
     }
 
     @Override
     public List<LeagueItem> findAll() {
         return leagueItems;
+    }
+
+    @Override
+    public List<LeagueItem> findByTier(String tier) {
+
+        if (Objects.equals(tier, "challenger"))
+            return leagueItemsOfChallenger;
+
+        return null;
     }
 }

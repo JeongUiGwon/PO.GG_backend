@@ -25,4 +25,13 @@ public class SimpleRankingService {
 
         return leagueItemDTOs;
     }
+
+    public List<LeagueItemDTO> findByTier(String tier) {
+        List<LeagueItem> leagueItems = leagueItemRepository.findByTier(tier);
+        List<LeagueItemDTO> leagueItemDTOs = leagueItems.stream()
+                .map(leagueItem -> LeagueItemDTO.toDto(leagueItem))
+                .toList();
+
+        return leagueItemDTOs;
+    }
 }
